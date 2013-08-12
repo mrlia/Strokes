@@ -1,8 +1,10 @@
-import Leap, sys, pygame, math
+import Leap, sys, pygame, math, json
 from Leap import SwipeGesture
+from random import randrange
 
 
 class Stroke:
+	"""This class represents a player stroke."""
 	positions = []
 	strokeID = None
 	def __init__(self,id,pos):
@@ -20,6 +22,7 @@ class Stroke:
 			prevPos = pos
 
 class Enemy:
+	"""This class represents the kanji enemies, with the name and stroke list."""
 	strokes = []
 	name = ""
 	curStroke = 0
@@ -38,20 +41,28 @@ def isSimilar(firstStroke,secondStroke):
 	return True
 
 def getEnemy():
-	strokes = [Stroke(1,(300,400))]
-	
-	return Enemy(strokes,"boca")
+	"""Get a random enemy from the list of kanji file."""
+	f = open('Enemies.json','r')
+	fileContent = f.read()
+	kanjiList = json.loads(fileContent)['kanjis']
+	nKanjis = len(kanjiList)
+	newEnemy = kanjiList[randrange(nKanjis)]
+	strokes = [Stroke(newEnemy['id'],newEnemy['strokes'])]
+	return Enemy(strokes,newEnemy['name'])
 
 class GameState:
+	"""Manage the state of the game and its enemies."""
 	enemy = getEnemy()
 
 	def attack(self,stroke):
+		"""Attack the enemy with a stroke and check if it's defeated."""
 		self.enemy.attack(stroke)
 		if self.enemy.isDefeated():
-			print "Enemy {} defeated!!!!".format(self.enemy.name)
+			print "Enemy %s defeated!!!!" % self.enemy.name
 			self.enemy = getEnemy()
 
 class GameListener(Leap.Listener):
+	"""Listener for the Leap gestures."""
 	curStroke = None
 	gameState = GameState()
 	def on_init(self, controller):
@@ -69,17 +80,22 @@ class GameListener(Leap.Listener):
 		controller.enable_gesture(Leap.Gesture.TYPE_SWIPE);
 		
 	def on_frame(self, controller):
+		"""Manage the swipe gestures that will be the strokes."""
 		frame = controller.frame()
-		# Gestures
 		for gesture in frame.gestures():
+			#Get the swipe
 			swipe = SwipeGesture(gesture)
 			print swipe.position
+			#Get the x and y positions of the swipe
 			positionList = swipe.position.to_tuple()
 			curPos = [int(positionList[0]+500),int(math.fabs(positionList[1]-500))]
+			#If it's the beginning of the swipe, create a new Stroke
 			if swipe.state == Leap.Gesture.STATE_START:
 				self.curStroke = Stroke(swipe.id,curPos)
+			#If it's the same swipe, add the new position to the current stroke
 			elif swipe.state == Leap.Gesture.STATE_UPDATE:
 				self.curStroke.addPos(curPos)
+			#If it's the end of the swipe, check if the swipe was correct
 			elif swipe.state == Leap.Gesture.STATE_STOP:
 				self.gameState.attack(self.curStroke)
 
@@ -89,21 +105,21 @@ class GameListener(Leap.Listener):
 
 screen = pygame.display.set_mode([900,600])
 def main():
-	# Create a sample listener and controller
+	# Create a game listener, controller and init pygame
 	listener = GameListener()
 	controller = Leap.Controller()
 	pygame.init()
 	screen.fill((0,255,255))
 	pygame.display.flip()
 	
-	# Have the sample listener receive events from the controller
+	# Have the game listener receive events from the controller
 	controller.add_listener(listener)
 	
 	# Keep this process running until Enter is pressed
 	print "Press Enter to quit..."
 	sys.stdin.readline()
 	
-	# Remove the sample listener when done
+	# Remove the game listener when done
 	controller.remove_listener(listener)
 
 	
