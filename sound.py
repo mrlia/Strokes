@@ -3,6 +3,12 @@ import pygame, os.path
 #Create the relative path to the data
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
+def init_sound():
+    # Try to init the sound
+    if pygame.mixer and not pygame.mixer.get_init():
+        print ('Error, no hay sonido')
+        pygame.mixer = None
+
 class noSound:
     """This class is in case the sound fails."""
     def play(self): pass
