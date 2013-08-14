@@ -1,6 +1,7 @@
-import Leap, sys, pygame, math, json, Enemies, Strokes
+import Leap, sys, pygame, math
 from Leap import SwipeGesture
-from random import randrange
+from Enemies import *
+from Stroke import *
 
 
 class GameState:
@@ -52,7 +53,7 @@ class GameListener(Leap.Listener):
 			elif swipe.state == Leap.Gesture.STATE_STOP:
 				self.gameState.attack(self.curStroke)
 
-			self.curStroke.draw()
+			self.curStroke.draw(screen)
 			pygame.display.flip()
 
 
