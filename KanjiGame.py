@@ -1,54 +1,7 @@
-import Leap, sys, pygame, math, json
+import Leap, sys, pygame, math, json, Enemies, Strokes
 from Leap import SwipeGesture
 from random import randrange
 
-
-class Stroke:
-	"""This class represents a player stroke."""
-	positions = []
-	strokeID = None
-	def __init__(self,id,pos):
-		self.strokeID = id
-		self.positions = []
-		self.positions.append(pos)
-
-	def addPos(self, pos):
-		self.positions.append(pos)
-
-	def draw(self):
-		prevPos = self.positions[0]
-		for pos in self.positions:
-			pygame.draw.line(screen, (0,0,0), prevPos, pos, 3)
-			prevPos = pos
-
-class Enemy:
-	"""This class represents the kanji enemies, with the name and stroke list."""
-	strokes = []
-	name = ""
-	curStroke = 0
-	def __init__(self,strokeList,name):
-		self.strokes = strokeList
-		self.name = name
-
-	def attack(self,stroke):
-		if isSimilar(self.strokes[self.curStroke],stroke):
-			self.curStroke = self.curStroke + 1
-
-	def isDefeated(self):
-		return self.curStroke == len(self.strokes)
-
-def isSimilar(firstStroke,secondStroke):
-	return True
-
-def getEnemy():
-	"""Get a random enemy from the list of kanji file."""
-	f = open('Enemies.json','r')
-	fileContent = f.read()
-	kanjiList = json.loads(fileContent)['kanjis']
-	nKanjis = len(kanjiList)
-	newEnemy = kanjiList[randrange(nKanjis)]
-	strokes = [Stroke(newEnemy['id'],newEnemy['strokes'])]
-	return Enemy(strokes,newEnemy['name'])
 
 class GameState:
 	"""Manage the state of the game and its enemies."""
