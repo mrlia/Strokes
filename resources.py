@@ -16,7 +16,7 @@ def init_window():
     screen.fill((0,255,255))
     pygame.display.flip()
     pygame.display.set_icon(load_image('data','icon.gif'))
-    pygame.display.set_caption('Lost Sound')
+    pygame.display.set_caption('Kanji Strokes')
 
 def init_background():    
     # Create the background
