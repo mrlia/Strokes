@@ -1,8 +1,8 @@
-import json
+import json, pygame
 from random import randrange
 from Stroke import *
 
-class Enemy:
+class Enemy(pygame.sprite.Sprite):
 	"""This class represents the kanji enemies, with the name and stroke list."""
 	strokes = []
 	name = ""
