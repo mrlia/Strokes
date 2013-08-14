@@ -2,7 +2,9 @@ import Leap, sys, pygame, math
 from Leap import SwipeGesture
 from Enemies import *
 from Stroke import *
-
+from image import *
+from sound import *
+from resources import *
 
 class GameState:
 	"""Manage the state of the game and its enemies."""
@@ -57,14 +59,12 @@ class GameListener(Leap.Listener):
 			pygame.display.flip()
 
 
-screen = pygame.display.set_mode([900,600])
 def main():
 	# Create a game listener, controller and init pygame
 	listener = GameListener()
 	controller = Leap.Controller()
 	pygame.init()
-	screen.fill((0,255,255))
-	pygame.display.flip()
+	init_window()
 	
 	# Have the game listener receive events from the controller
 	controller.add_listener(listener)
