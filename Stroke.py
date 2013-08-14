@@ -1,3 +1,5 @@
+import pygame
+
 class Stroke:
 	"""This class represents a player stroke."""
 	positions = []
@@ -10,10 +12,10 @@ class Stroke:
 	def addPos(self, pos):
 		self.positions.append(pos)
 
-	def draw(self):
+	def draw(self,surface):
 		prevPos = self.positions[0]
 		for pos in self.positions:
-			pygame.draw.line(screen, (0,0,0), prevPos, pos, 3)
+			pygame.draw.line(surface, (0,0,0), prevPos, pos, 3)
 			prevPos = pos
 
 def isSimilar(firstStroke,secondStroke):
