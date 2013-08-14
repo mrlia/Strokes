@@ -1,3 +1,7 @@
+import json
+from random import randrange
+from Stroke import *
+
 class Enemy:
 	"""This class represents the kanji enemies, with the name and stroke list."""
 	strokes = []
@@ -14,18 +18,19 @@ class Enemy:
 	def isDefeated(self):
 		return self.curStroke == len(self.strokes)
 
-    def draw(self):
-        print "I´m drawing " + self.name
+	def draw(self):
+		print "I'm drawing " + self.name
 
 def loadEnemies():
 	f = open('Enemies.json','r')
 	fileContent = f.read()
-	kanjiList = json.loads(fileContent)['kanjis']
+	return json.loads(fileContent)['kanjis']
 
 def getEnemy():
 	"""Get a random enemy from the list of kanji."""
+	kanjiList = loadEnemies()
 	nKanjis = len(kanjiList)
 	newEnemy = kanjiList[randrange(nKanjis)]
-	strokes = [Stroke(newEnemy['id'],newEnemy['strokes'])]
+	strokes = Stroke(newEnemy['id'],newEnemy['strokes']).positions
 	return Enemy(strokes,newEnemy['name'])
 
