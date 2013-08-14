@@ -5,6 +5,7 @@ from Stroke import *
 from image import *
 from sound import *
 from resources import *
+from score import *
 
 class GameState:
 	"""Manage the state of the game and its enemies."""
@@ -14,6 +15,7 @@ class GameState:
 		"""Attack the enemy with a stroke and check if it's defeated."""
 		self.enemy.attack(stroke)
 		if self.enemy.isDefeated():
+			score.addPoint(self.enemy.name)
 			print "Enemy %s defeated!!!!" % self.enemy.name
 			self.enemy = getEnemy()
 
@@ -65,17 +67,42 @@ def main():
 	controller = Leap.Controller()
 	pygame.init()
 	init_window()
+	init_background()
 	
 	# Have the game listener receive events from the controller
 	controller.add_listener(listener)
+
+	all = pygame.sprite.Group()
+	Score.containers = all
+
+	global score
+	score = Score()
+	global QUIT
+	QUIT = 0
+
+	clock = pygame.time.Clock()
+	while not QUIT:
+		# Set the fps.
+		timePassed = clock.tick(50)
+		
+		# Check if the player wants to quit
+		for event in pygame.event.get():
+			if event.type == QUIT or \
+				(event.type == KEYDOWN and event.key == K_ESCAPE):
+					controller.remove_listener(listener)
+					return
+
+		# Delete all the Sprites from the screen and update them
+		all.clear(get_screen(), get_background())
+		all.update()
 	
-	# Keep this process running until Enter is pressed
-	print "Press Enter to quit..."
-	sys.stdin.readline()
+		update_screen()
+		dirty = all.draw(get_screen())
+        pygame.display.flip()
 	
 	# Remove the game listener when done
 	controller.remove_listener(listener)
 
-	
+
 if __name__ == "__main__":
 	main()
