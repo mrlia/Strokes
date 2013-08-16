@@ -1,4 +1,5 @@
 import json, pygame
+import math
 from random import randrange
 from Stroke import *
 
@@ -33,7 +34,7 @@ def getEnemy():
 	newEnemy = kanjiList[randrange(nKanjis)]
 	strokes = []
 	for posList in newEnemy['strokes']:
-		stroke = Stroke("id", [])
+		stroke = Stroke("id", None)
 		for pos in posList:
 			stroke.addPos(pos)
 		strokes.append(stroke)
