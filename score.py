@@ -14,7 +14,6 @@ class Score(pygame.sprite.Sprite):
     def addPoint(self,name):
         self.score = self.score + 1
         self.name = name
-        print self.score
 
     def update(self):
         """Update the score"""
