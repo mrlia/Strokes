@@ -31,6 +31,11 @@ def getEnemy():
 	kanjiList = loadEnemies()
 	nKanjis = len(kanjiList)
 	newEnemy = kanjiList[randrange(nKanjis)]
-	strokes = Stroke(newEnemy['id'],newEnemy['strokes']).positions
+	strokes = []
+	for posList in newEnemy['strokes']:
+		stroke = Stroke("id", [])
+		for pos in posList:
+			stroke.addPos(pos)
+		strokes.append(stroke)
 	return Enemy(strokes,newEnemy['name'])
 
