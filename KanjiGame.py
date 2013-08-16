@@ -9,7 +9,9 @@ from score import *
 
 class GameState:
 	"""Manage the state of the game and its enemies."""
-	enemy = getEnemy()
+	enemy = None
+	def __init__(self):
+		self.enemy = getEnemy()
 
 	def attack(self,stroke):
 		"""Attack the enemy with a stroke and check if it's defeated."""
@@ -23,7 +25,7 @@ class GameState:
 class GameListener(Leap.Listener):
 	"""Listener for the Leap gestures."""
 	curStroke = None
-	gameState = GameState()
+	gameState = None
 	def on_init(self, controller):
 		print "Initialized"
 
@@ -49,7 +51,7 @@ class GameListener(Leap.Listener):
 			curPos = [int(positionList[0]+500),int(math.fabs(positionList[1]-500))]
 			#If it's the beginning of the swipe, create a new Stroke
 			if swipe.state == Leap.Gesture.STATE_START:
-				self.curStroke = Stroke(swipe.id,curPos)
+				self.curStroke = Stroke(curPos)
 			#If it's the same swipe, add the new position to the current stroke
 			elif swipe.state == Leap.Gesture.STATE_UPDATE:
 				self.curStroke.addPos(curPos)
@@ -62,18 +64,23 @@ class GameListener(Leap.Listener):
 
 
 def main():
-	# Create a game listener, controller and init pygame
-	listener = GameListener()
-	controller = Leap.Controller()
 	pygame.init()
 	init_window()
 	init_background()
 	
-	# Have the game listener receive events from the controller
-	controller.add_listener(listener)
-
 	all = pygame.sprite.Group()
 	Score.containers = all
+	Enemy.containers = all
+	
+	# Create the game state manager
+	gameState = GameState()
+
+	# Create a game listener, controller and init pygame
+	listener = GameListener()
+	listener.gameState = gameState
+	controller = Leap.Controller()
+	# Have the game listener receive events from the controller
+	controller.add_listener(listener)
 
 	global score
 	score = Score()
