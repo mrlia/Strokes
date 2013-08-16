@@ -1,6 +1,6 @@
 import json, pygame
-import math
 from random import randrange
+from image import *
 from Stroke import *
 
 class Enemy(pygame.sprite.Sprite):
@@ -8,7 +8,12 @@ class Enemy(pygame.sprite.Sprite):
 	strokes = []
 	name = ""
 	curStroke = 0
-	def __init__(self,strokeList,name):
+	def __init__(self,id,strokeList,name):
+		pygame.sprite.Sprite.__init__(self, self.containers)
+		self.id = id
+		self.images = assembleSprites((160,120), (3,1),'data','uno.png')
+		self.image = self.images[self.id]
+		self.rect = self.image.get_rect(center=(200,200))
 		self.strokes = strokeList
 		self.name = name
 
@@ -19,8 +24,11 @@ class Enemy(pygame.sprite.Sprite):
 	def isDefeated(self):
 		return self.curStroke == len(self.strokes)
 
-	def draw(self):
-		print "I'm drawing " + self.name
+	def update(self):
+		if self.isDefeated():
+			self.image = self.images[self.id+2]
+		else:
+			self.image = self.images[self.id+1]
 
 def loadEnemies():
 	f = open('Enemies.json','r')
@@ -34,9 +42,9 @@ def getEnemy():
 	newEnemy = kanjiList[randrange(nKanjis)]
 	strokes = []
 	for posList in newEnemy['strokes']:
-		stroke = Stroke("id", None)
+		stroke = Stroke(None)
 		for pos in posList:
 			stroke.addPos(pos)
 		strokes.append(stroke)
-	return Enemy(strokes,newEnemy['name'])
+	return Enemy(newEnemy['id'],strokes,newEnemy['name'])
 
