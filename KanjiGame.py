@@ -14,6 +14,7 @@ class GameState:
 	def attack(self,stroke):
 		"""Attack the enemy with a stroke and check if it's defeated."""
 		self.enemy.attack(stroke)
+		print "%s Attacked!!!!" % self.enemy.name
 		if self.enemy.isDefeated():
 			score.addPoint(self.enemy.name)
 			print "Enemy %s defeated!!!!" % self.enemy.name
@@ -43,7 +44,6 @@ class GameListener(Leap.Listener):
 		for gesture in frame.gestures():
 			#Get the swipe
 			swipe = SwipeGesture(gesture)
-			print swipe.position
 			#Get the x and y positions of the swipe
 			positionList = swipe.position.to_tuple()
 			curPos = [int(positionList[0]+500),int(math.fabs(positionList[1]-500))]
