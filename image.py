@@ -1,4 +1,5 @@
 import pygame, os.path
+from pygame.locals import *
 
 #Create the relative path to the data
 main_dir = os.path.split(os.path.abspath(__file__))[0]
@@ -22,7 +23,7 @@ def load_images(directory,*files):
 
 def assembleSprite(directory,filename, size, matrix):
     """Returns a list with the images of the file.
-    The size is the size of each image inside the file.
+    The size is the size of each image in pixels inside the file.
     The matrix indicates how the images are positionate (nCol,nRow)"""
     width = size[0]
     height = size[1]

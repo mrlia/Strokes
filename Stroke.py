@@ -3,9 +3,7 @@ import pygame, math
 class Stroke:
 	"""This class represents a player stroke."""
 	positions = []
-	strokeID = None
-	def __init__(self,id,pos):
-		self.strokeID = id
+	def __init__(self,pos):
 		self.positions = []
 		if pos != None :
 			self.positions.append(pos)
