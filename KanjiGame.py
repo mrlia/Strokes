@@ -13,11 +13,17 @@ class GameState:
 	def __init__(self):
 		self.enemy = getEnemy()
 
+	def attacking(self):
+		if not(self.enemy.isDefeated()):
+			self.enemy.attacking()
+
 	def attack(self,stroke):
 		"""Attack the enemy with a stroke and check if it's defeated."""
 		self.enemy.attack(stroke)
 		print "%s Attacked!!!!" % self.enemy.name
 		if self.enemy.isDefeated():
+			pygame.time.wait(1000)
+			self.enemy.kill()
 			score.addPoint(self.enemy.name)
 			print "Enemy %s defeated!!!!" % self.enemy.name
 			self.enemy = getEnemy()
@@ -55,6 +61,7 @@ class GameListener(Leap.Listener):
 			#If it's the same swipe, add the new position to the current stroke
 			elif swipe.state == Leap.Gesture.STATE_UPDATE:
 				self.curStroke.addPos(curPos)
+				self.gameState.attacking()
 			#If it's the end of the swipe, check if the swipe was correct
 			elif swipe.state == Leap.Gesture.STATE_STOP:
 				self.gameState.attack(self.curStroke)
@@ -72,6 +79,9 @@ def main():
 	Score.containers = all
 	Enemy.containers = all
 	
+	# Load the images of the sprites
+	load_game_images()
+
 	# Create the game state manager
 	gameState = GameState()
 
@@ -84,6 +94,7 @@ def main():
 
 	global score
 	score = Score()
+	all.add(score)
 	global QUIT
 	QUIT = 0
 
@@ -105,7 +116,7 @@ def main():
 	
 		update_screen()
 		dirty = all.draw(get_screen())
-        pygame.display.flip()
+		pygame.display.flip()
 	
 	# Remove the game listener when done
 	controller.remove_listener(listener)

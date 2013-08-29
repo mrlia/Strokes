@@ -1,6 +1,7 @@
 import pygame
 from image import *
 from sound import *
+from Enemies import *
 from pygame.locals import *
 
 SCREENRECT = Rect(0, 0, 900, 600)
@@ -33,3 +34,6 @@ def get_background():
 
 def update_screen():
     screen.blit(background, (0,0))
+
+def load_game_images():
+    Enemy.images = assembleSprites((160,120),'data','uno.png','dos.png')

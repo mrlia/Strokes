@@ -21,17 +21,21 @@ def load_images(directory,*files):
         images.append(load_image(directory,file))
     return images
 
-def assembleSprite(directory,filename, size, matrix):
+def assembleSprite(directory, filename, size):
     """Returns a list with the images of the file.
-    The size is the size of each image in pixels inside the file.
-    The matrix indicates how the images are positionate (nCol,nRow)"""
+    The size is the size of each image in pixels inside the file."""
     width = size[0]
     height = size[1]
     file = os.path.join(main_dir, directory, filename)
     spritesheet = pygame.image.load(file)
+    sizeTotal = spritesheet.get_size()
+    widthTotal = sizeTotal[0]
+    heightTotal = sizeTotal[1]
+    row = heightTotal / height
+    col = widthTotal / width
     sprites = []
-    for y in range(matrix[1]):
-        for x in range(matrix[0]):
+    for y in range(row):
+        for x in range(col):
             image = pygame.Surface((width,height))
             w = x*width
             w2 = (x+1)*width
@@ -40,14 +44,16 @@ def assembleSprite(directory,filename, size, matrix):
             rect = (w, h, w2, h2)
             image.blit(spritesheet, (0,0), rect)
             image = image.convert()
-            colorkey = image.get_at((0,0))
-            image.set_colorkey(colorkey, RLEACCEL)
+            #colorkey = image.get_at((0,0))
+            #image.set_colorkey(colorkey, RLEACCEL)
             sprites.append(image)
     return sprites
 
-def assembleSprites(size, matrix, directory, *files):
-    """Esta funcion devuelve una lista con las imagenes de varios ficheros que se le indiquen"""
+def assembleSprites(size, directory, *files):
+    """Returns a list with the images of several files
+    The size is the size of each image in pixels inside the files.
+    The matrix indicates how the images are positionate (nCol,nRow)"""
     sprites = []
     for file in files:
-        sprites.extend(assembleSprite(directory, file, size, matrix))
+        sprites.append(assembleSprite(directory, file, size))
     return sprites
